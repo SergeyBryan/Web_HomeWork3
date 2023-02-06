@@ -5,6 +5,7 @@ import com.example.web_homework3.services.RecipeService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
@@ -13,7 +14,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Recipe getRecipe(int number) {
-      return recipes.get(number);
+        return recipes.get(number);
     }
 
     @Override

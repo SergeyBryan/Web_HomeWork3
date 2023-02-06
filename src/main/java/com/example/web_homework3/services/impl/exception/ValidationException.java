@@ -1,13 +1,13 @@
 package com.example.web_homework3.services.impl.exception;
 
-public class MyException extends Exception{
+public class ValidationException extends RuntimeException{
 
     @Override
     public String getMessage() {
         return super.getMessage();
     }
 
-    public MyException(String message) {
+    public ValidationException(String message) {
         super(message);
     }
 }
