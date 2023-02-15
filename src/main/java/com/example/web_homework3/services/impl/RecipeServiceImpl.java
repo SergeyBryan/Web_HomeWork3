@@ -29,10 +29,11 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public void addRecipe(Recipe recipe) {
+    public Recipe addRecipe(Recipe recipe) {
         if (!recipes.containsValue(recipe)) {
             recipes.put(recipeId++, recipe);
         }
+        return null;
     }
 
     @Override

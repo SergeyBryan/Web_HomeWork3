@@ -10,7 +10,8 @@ public interface IngredientService {
 
     void getAllIngredients();
 
-    Ingredient ingredientEdit(int number, Ingredient ingredient);
+    Ingredient editIngredient(int number, Ingredient ingredient);
 
-    boolean deleteIngredient(int number);
+
+    Ingredient deleteIngredient(int id, Ingredient ingredient);
 }

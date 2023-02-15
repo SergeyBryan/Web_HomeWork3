@@ -31,12 +31,12 @@ public class IngredientServiceImpl implements IngredientService {
         for (Map.Entry<Integer, Ingredient> integerIngredientEntry : ingredients.entrySet()) {
             int key = integerIngredientEntry.getKey();
             Ingredient ingredient = integerIngredientEntry.getValue();
-            System.out.println("Рецепт №" + key + ", ингредиент: " + ingredient);
+            System.out.println("Ингредиент №" + key +", " + ingredient);
         }
     }
 
     @Override
-    public Ingredient ingredientEdit(int id, Ingredient ingredient) {
+    public Ingredient editIngredient(int id, Ingredient ingredient) {
         if (ingredients.containsKey(id)) {
             ingredients.put(id, ingredient);
         }
@@ -44,11 +44,11 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public boolean deleteIngredient(int number) {
-        if (ingredients.containsKey(number)) {
-            ingredients.remove(number);
-            return true;
+    public Ingredient deleteIngredient(int id, Ingredient ingredient) {
+        if (ingredients.containsKey(id)) {
+            ingredients.remove(id);
+            return ingredient;
         }
-        return false;
+        return null;
     }
 }
