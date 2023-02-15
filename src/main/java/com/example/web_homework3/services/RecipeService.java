@@ -6,5 +6,11 @@ public interface RecipeService {
 
     Recipe getRecipe(int number);
 
+    void getRecipeAll();
+
     void addRecipe(Recipe recipe);
+
+    Recipe editRecipe(int number, Recipe recipe);
+
+    Recipe deleteRecipe(int number, Recipe recipe);
 }
