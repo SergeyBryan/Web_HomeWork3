@@ -25,22 +25,31 @@ public class IngredientController {
         this.ingredientService = ingredientService;
     }
 
-    @GetMapping()
+    @GetMapping("/{id}")
     @Operation(summary = "Получение информации об ингредиенте или ингредиентах",
-            description = "Запрашиваем информацию по id ингредиента, если нет id, то выведёт информацию по всем созданным ингредиентам")
+            description = "Запрашиваем информацию об ингредиенте по id")
     @Parameters(value = {@Parameter(name = "id", example = "1")})
     @ApiResponses(value = {@ApiResponse(responseCode = "200",
             description = "Ингредиент был найдён"
     )})
-    public ResponseEntity<Void> getIngredient(@RequestParam(required = false) int id) {
+    public ResponseEntity<String> getIngredient(@PathVariable int id) {
         Ingredient ingredient = ingredientService.getIngredient(id);
         if (ingredient == null) {
-            ingredientService.getAllIngredients();
-            return ResponseEntity.ok().build();
+            System.out.println("Ингрдениент не найден");
+            return ResponseEntity.notFound().build();
         }
         ingredientService.getIngredient(id);
-        System.out.println("Ингредиент под номером " + id + " содержит: " + ingredientService.getIngredient(id));
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Ингредиент под номером " + id + " содержит: " + ingredientService.getIngredient(id));
+    }
+
+    @GetMapping()
+    @Operation(summary = "Получение информации об ингредиентах",
+            description = "Запрашиваем информацию по всем ингредиентам")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",
+            description = "Ингредиенты были найдёны"
+    )})
+    public ResponseEntity<String> getAllIngredient() {
+        return ResponseEntity.ok(ingredientService.getAllIngredients());
     }
 
     @PostMapping()
