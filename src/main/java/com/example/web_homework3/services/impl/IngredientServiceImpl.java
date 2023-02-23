@@ -58,7 +58,7 @@ public class IngredientServiceImpl implements IngredientService {
             System.out.println("Ингредиент №" + key + ", " + ingredient);
             return "Ингредиент №" + key + ", " + ingredient;
         }
-        return null;
+        throw new FileProcessingException("Ингредиентов нет");
     }
 
     @Override
@@ -67,7 +67,7 @@ public class IngredientServiceImpl implements IngredientService {
             ingredients.put(id, ingredient);
             saveToFile();
         }
-        return null;
+        throw new FileProcessingException("Ингредиент не найден");
     }
 
     @Override
@@ -77,7 +77,7 @@ public class IngredientServiceImpl implements IngredientService {
             saveToFile();
             return ingredient;
         }
-        return null;
+        throw new FileProcessingException("Ингредиент не найдён");
     }
 
     private void saveToFile() {
@@ -85,7 +85,7 @@ public class IngredientServiceImpl implements IngredientService {
             String json = new ObjectMapper().writeValueAsString(ingredients);
             filesService.saveToFile(json, ingredientFilePath, ingredientFileName);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new FileProcessingException("Файл не найден");
         }
     }
 

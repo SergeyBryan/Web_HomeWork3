@@ -21,8 +21,4 @@ public class Recipe {
     private ArrayList<Ingredient> ingredients;
     private ArrayList<String>steps;
 
-    @JsonCreator
-    public Recipe(@JsonProperty(value = "name", required = true)String name) {
-        this.name = name;
-    }
 }

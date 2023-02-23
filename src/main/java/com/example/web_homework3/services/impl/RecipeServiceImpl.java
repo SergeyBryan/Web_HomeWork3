@@ -51,7 +51,7 @@ public class RecipeServiceImpl implements RecipeService {
             System.out.println("Рецепт №" + key + ", Рецепт: " + recipe);
             return "Рецепт № " + key + ", Рецепт: " + recipe;
         }
-        return null;
+        throw new FileProcessingException("Рецепт не найден");
     }
 
     @Override
@@ -95,7 +95,7 @@ public class RecipeServiceImpl implements RecipeService {
             String json = new ObjectMapper().writeValueAsString(recipes);
             filesService.saveToFile(json, recipeFilePath, recipeFileName);
         } catch (JsonProcessingException e) {
-            throw new FileProcessingException("No file here");
+            throw new FileProcessingException("Файл не найден");
         }
     }
 

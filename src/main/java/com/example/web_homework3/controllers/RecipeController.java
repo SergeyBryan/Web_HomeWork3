@@ -26,19 +26,7 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    //    @GetMapping()
-//    @Operation(summary = "Получить информацию по рецепту", description = "Получить информацию о рецепте по id, если не указан id, то получение информации по всем рецептам")
-//    @Parameters(value = {@Parameter(name = "id", example = "1")})
-//    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Рецепт найдён")})
-//    public ResponseEntity<Void> getRecipe(@RequestParam(required = false) @Min(0) int id) {
-//        Recipe recipe = recipeService.getRecipe(id);
-//        if (recipe != null) {
-//            System.out.println("Рецепт под номером " + id + " содержит: " + recipeService.getRecipe(id));
-//            return ResponseEntity.ok().build();
-//        }
-//        recipeService.getRecipeAll();
-//        return ResponseEntity.ok().build();
-//    }
+
     @GetMapping()
     @Operation(summary = "Получить информацию по рецептам", description = "Получить информацию по всем рецептам")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Рецепты найдёны")})
@@ -74,7 +62,7 @@ public class RecipeController {
     @PostMapping()
     @Operation(summary = "Создать новый рецепт", description = "Создаёт новый рецепт присваивая ему id")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Рецепт создан")})
-    public ResponseEntity<Recipe> createRecipe(@RequestBody() @Valid Recipe newRecipe) {
+    public ResponseEntity<Recipe> createRecipe(@RequestBody @Valid Recipe newRecipe) {
         return ResponseEntity.ok(recipeService.addRecipe(newRecipe));
     }
 
