@@ -6,11 +6,12 @@ public interface RecipeService {
 
     Recipe getRecipe(int number);
 
-    void getRecipeAll();
+    String getRecipeAll();
 
     Recipe addRecipe(Recipe recipe);
 
     Recipe editRecipe(int number, Recipe recipe);
 
     Recipe deleteRecipe(int number, Recipe recipe);
+
 }

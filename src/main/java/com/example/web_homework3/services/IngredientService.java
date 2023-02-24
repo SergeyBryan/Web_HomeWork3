@@ -8,10 +8,11 @@ public interface IngredientService {
 
     Ingredient getIngredient(int number);
 
-    void getAllIngredients();
+    String getAllIngredients();
 
     Ingredient editIngredient(int number, Ingredient ingredient);
 
 
     Ingredient deleteIngredient(int id, Ingredient ingredient);
+
 }
