@@ -3,16 +3,19 @@ package com.example.web_homework3.controllers;
 import com.example.web_homework3.model.Recipe;
 import com.example.web_homework3.services.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.io.*;
 
 
 @RestController
@@ -30,8 +33,8 @@ public class RecipeController {
     @GetMapping()
     @Operation(summary = "Получить информацию по рецептам", description = "Получить информацию по всем рецептам")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Рецепты найдёны")})
-    public ResponseEntity<String> getRecipe() {
-        return ResponseEntity.ok(recipeService.getRecipeAll());
+    public ResponseEntity<String> getAllRecipe() {
+        return ResponseEntity.ok(recipeService.getRecipeAll().toString());
     }
 
     @GetMapping("/{id}")
@@ -80,5 +83,27 @@ public class RecipeController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/export")
+    @Operation(summary = "Выгрузить файл с рецептами", description = "Выгружает все созданные рецепты в файл в формате .json")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Файл выгружается")})
+    public ResponseEntity<InputStreamResource> downloadFile() throws FileNotFoundException {
+        File file = recipeService.getDataFile();
+        if (file.exists()) {
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+            return ResponseEntity.ok().
+                    contentType(MediaType.APPLICATION_OCTET_STREAM).
+                    contentLength(file.length()).
+                    header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"RecipeLog.json\"").
+                    body(resource);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
+
+    @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadFile(@RequestParam MultipartFile file) throws IOException {
+        recipeService.uploadFile(file);
+        return ResponseEntity.ok().build();
+    }
 
 }

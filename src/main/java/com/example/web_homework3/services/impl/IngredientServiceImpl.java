@@ -7,18 +7,23 @@ import com.example.web_homework3.services.IngredientService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
     final private FilesService filesService;
-    @Value("${name.to.ingredientData.file}")
+    @Value("ingredientData.json")
     private String ingredientFileName;
     @Value("src/main/resources")
     private String ingredientFilePath;
@@ -50,15 +55,8 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public String getAllIngredients() {
-        for (Map.Entry<Integer, Ingredient> integerIngredientEntry : ingredients.entrySet()) {
-            int key = integerIngredientEntry.getKey();
-            Ingredient ingredient = integerIngredientEntry.getValue();
-
-            System.out.println("Ингредиент №" + key + ", " + ingredient);
-            return "Ингредиент №" + key + ", " + ingredient;
-        }
-        throw new FileProcessingException("Ингредиентов нет");
+    public Collection<Ingredient> getAllIngredients() {
+        return ingredients.values();
     }
 
     @Override
@@ -80,7 +78,7 @@ public class IngredientServiceImpl implements IngredientService {
         throw new FileProcessingException("Ингредиент не найдён");
     }
 
-    private void saveToFile() {
+    private void saveToFile() throws FileProcessingException {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredients);
             filesService.saveToFile(json, ingredientFilePath, ingredientFileName);
@@ -99,4 +97,23 @@ public class IngredientServiceImpl implements IngredientService {
             throw new FileProcessingException("Не удалось прочитать файл с ингредиентами");
         }
     }
+
+
+    @Override
+    public void updateFile(MultipartFile file) throws IOException {
+        Path filePath = Path.of(ingredientFilePath, ingredientFileName);
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+        try (
+                InputStream is = file.getInputStream();
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+        ) {
+            bis.transferTo(bos);
+        }
+        readFromFile(ingredientFilePath, ingredientFileName);
+    }
+
+
 }

@@ -1,5 +1,7 @@
 package com.example.web_homework3.services;
 
+import java.io.File;
+
 public interface FilesService {
 
 
@@ -8,5 +10,8 @@ public interface FilesService {
     String readFromFile(String dataFilePath, String dataFileName);
 
     boolean cleanDataFile(String dataFilePath, String dataFileName);
+
+    File getDataFile(String dataFilePath, String dataFileName);
+
 
 }

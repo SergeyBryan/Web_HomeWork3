@@ -4,24 +4,22 @@ import com.example.web_homework3.controllers.FileProcessingException;
 import com.example.web_homework3.model.Recipe;
 import com.example.web_homework3.services.FilesService;
 import com.example.web_homework3.services.RecipeService;
-import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
-import java.io.File;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
@@ -44,14 +42,8 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public String getRecipeAll() {
-        for (Map.Entry<Integer, Recipe> integerRecipeHashMap : recipes.entrySet()) {
-            int key = integerRecipeHashMap.getKey();
-            Recipe recipe = integerRecipeHashMap.getValue();
-            System.out.println("Рецепт №" + key + ", Рецепт: " + recipe);
-            return "Рецепт № " + key + ", Рецепт: " + recipe;
-        }
-        throw new FileProcessingException("Рецепт не найден");
+    public Collection<Recipe> getRecipeAll() {
+        return recipes.values();
     }
 
     @Override
@@ -70,7 +62,7 @@ public class RecipeServiceImpl implements RecipeService {
             saveToFile();
             return recipe;
         }
-        return null;
+        throw new FileProcessingException("Рецепт не найден");
     }
 
     @Override
@@ -109,6 +101,30 @@ public class RecipeServiceImpl implements RecipeService {
             throw new FileProcessingException("Не удалось прочитать");
         }
     }
+
+    @Override
+    public File getDataFile() {
+        return filesService.getDataFile(recipeFilePath, recipeFileName);
+    }
+
+
+    @Override
+    public void uploadFile(MultipartFile file) throws IOException {
+        Path filePath = Path.of(recipeFilePath, recipeFileName);
+        Files.createDirectories(filePath.getParent());
+        Files.deleteIfExists(filePath);
+        try (
+                InputStream is = file.getInputStream();
+                OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+        ) {
+            bis.transferTo(bos);
+        }
+        readFromFile(recipeFilePath, recipeFileName);
+    }
+
+
 }
 
 

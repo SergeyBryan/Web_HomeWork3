@@ -8,11 +8,14 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.io.*;
 
 @RestController
 @RequestMapping("/ingredient")
@@ -49,7 +52,7 @@ public class IngredientController {
             description = "Ингредиенты были найдёны"
     )})
     public ResponseEntity<String> getAllIngredient() {
-        return ResponseEntity.ok(ingredientService.getAllIngredients());
+        return ResponseEntity.ok(ingredientService.getAllIngredients().toString());
     }
 
     @PostMapping()
@@ -91,4 +94,12 @@ public class IngredientController {
         return ResponseEntity.notFound().build();
     }
 
+
+    @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Загрузить свой список ингредиентов", description = "Загрузить свой список ингредиентов в формате .json")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Список загружен")})
+    public ResponseEntity<File> uploadFile(@RequestParam MultipartFile file) throws IOException {
+        ingredientService.updateFile(file);
+        return ResponseEntity.ok().build();
+    }
 }
