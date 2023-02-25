@@ -101,6 +101,8 @@ public class RecipeController {
     }
 
     @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Загрузить свой файл с рецептами", description = "Загрузить свой файл с рецептами в формате .json")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Файл загружен")})
     public ResponseEntity<String> uploadFile(@RequestParam MultipartFile file) throws IOException {
         recipeService.uploadFile(file);
         return ResponseEntity.ok().build();
