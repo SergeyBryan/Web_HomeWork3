@@ -1,6 +1,12 @@
 package com.example.web_homework3.services;
 
 import com.example.web_homework3.model.Ingredient;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Collection;
 
 public interface IngredientService {
 
@@ -8,11 +14,14 @@ public interface IngredientService {
 
     Ingredient getIngredient(int number);
 
-    String getAllIngredients();
+    Collection<Ingredient> getAllIngredients();
 
     Ingredient editIngredient(int number, Ingredient ingredient);
 
 
     Ingredient deleteIngredient(int id, Ingredient ingredient);
 
+    void updateFile(MultipartFile file) throws IOException;
+
+    Path createReport() throws IOException;
 }
