@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 @RestController
@@ -106,6 +108,27 @@ public class RecipeController {
     public ResponseEntity<String> uploadFile(@RequestParam MultipartFile file) throws IOException {
         recipeService.uploadFile(file);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/report")
+    @Operation(summary = "Выгрузить рецепты в .txt файл")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Файл выгружен в .txt"),@ApiResponse(responseCode = "204", description = "Рецептов нет")})
+    public ResponseEntity<Object> createReport()throws IOException {
+        try {
+            Path path = recipeService.createReport();
+            if (Files.size(path) == 0) {
+                return ResponseEntity.noContent().build();
+            }
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity.ok().
+                    contentType(MediaType.APPLICATION_OCTET_STREAM).
+                    contentLength(Files.size(path)).
+                    header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"-report.txt\"").
+                    body(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }

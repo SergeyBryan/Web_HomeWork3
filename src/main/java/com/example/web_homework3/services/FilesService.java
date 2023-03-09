@@ -1,6 +1,7 @@
 package com.example.web_homework3.services;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public interface FilesService {
 
@@ -14,4 +15,5 @@ public interface FilesService {
     File getDataFile(String dataFilePath, String dataFileName);
 
 
+    Path createTempFile(String dataFilePath, String suffix);
 }

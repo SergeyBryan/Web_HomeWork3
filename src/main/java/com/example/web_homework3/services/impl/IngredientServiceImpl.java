@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -113,6 +114,19 @@ public class IngredientServiceImpl implements IngredientService {
             bis.transferTo(bos);
         }
         readFromFile(ingredientFilePath, ingredientFileName);
+    }
+
+    @Override
+    public Path createReport() throws IOException {
+        Path path = filesService.createTempFile(ingredientFilePath, "report");
+        for (Ingredient ingredient : ingredients.values()) {
+            try (
+                    Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+                writer.append("Ингредиент: " + ingredient.getName() + ", количество: " + ingredient.getAmount() + " " + ingredient.getMeasureUnit());
+                writer.append("\n");
+            }
+        }
+        return path;
     }
 
 

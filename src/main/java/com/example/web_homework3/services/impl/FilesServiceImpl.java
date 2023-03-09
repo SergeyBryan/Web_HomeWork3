@@ -57,5 +57,13 @@ public class FilesServiceImpl implements FilesService {
         return new File(dataFilePath + "/" + dataFileName);
     }
 
+    @Override
+    public Path createTempFile(String dataFilePath, String suffix) {
+        try {
+            return Files.createTempFile(Path.of(dataFilePath), "tempFile", suffix);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
+    }
 }

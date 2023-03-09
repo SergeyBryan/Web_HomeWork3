@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 
 public interface IngredientService {
@@ -21,4 +22,6 @@ public interface IngredientService {
     Ingredient deleteIngredient(int id, Ingredient ingredient);
 
     void updateFile(MultipartFile file) throws IOException;
+
+    Path createReport() throws IOException;
 }

@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 
 public interface RecipeService {
@@ -24,4 +25,5 @@ public interface RecipeService {
 
     void uploadFile(MultipartFile file) throws IOException;
 
+    Path createReport() throws IOException;
 }

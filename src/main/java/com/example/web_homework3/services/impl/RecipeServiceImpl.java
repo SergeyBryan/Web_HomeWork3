@@ -1,6 +1,7 @@
 package com.example.web_homework3.services.impl;
 
 import com.example.web_homework3.controllers.FileProcessingException;
+import com.example.web_homework3.model.Ingredient;
 import com.example.web_homework3.model.Recipe;
 import com.example.web_homework3.services.FilesService;
 import com.example.web_homework3.services.RecipeService;
@@ -15,6 +16,7 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,7 +126,30 @@ public class RecipeServiceImpl implements RecipeService {
         readFromFile(recipeFilePath, recipeFileName);
     }
 
-
+    @Override
+    public Path createReport() throws IOException {
+        Path path = filesService.createTempFile(recipeFilePath, "RecipeReport");
+        for (Recipe recipe : recipes.values()) {
+            try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+                writer.append(recipe.getName() + "\n");
+                writer.append("\n");
+                writer.append("Время приготовления: " + recipe.getDuration() + " минут" + "\n");
+                writer.append("\n");
+                writer.append("Ингредиенты: " + "\n");
+                writer.append("\n");
+                for (Ingredient ingredient : recipe.getIngredients()) {
+                    writer.append(ingredient.getName() + " - " + ingredient.getAmount() + " " + ingredient.getMeasureUnit() + "\n");
+                }
+                writer.append("\n");
+                writer.append("Инструкция приготовления: ");
+                writer.append(recipe.getSteps() + "\n");
+                writer.append("\n");
+                writer.append("---------------" + "\n");
+                writer.append("\n");
+            }
+        }
+        return path;
+    }
 }
 
 
