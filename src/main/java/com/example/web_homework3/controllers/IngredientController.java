@@ -2,12 +2,9 @@ package com.example.web_homework3.controllers;
 
 import com.example.web_homework3.model.Ingredient;
 import com.example.web_homework3.services.IngredientService;
-import com.example.web_homework3.services.impl.exception.MyException;
+import com.example.web_homework3.services.impl.exception.ValidationException;
 import com.example.web_homework3.services.impl.Validator;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/ingredient")
@@ -24,11 +21,11 @@ public class IngredientController {
         return ingredientService.getIngredient(number);
     }
 
-    @GetMapping("/create")
-    public void createIngredient(@RequestParam String name, @RequestParam int duration, @RequestParam String measureUnit) throws MyException {
-        Ingredient ingredient = new Ingredient(Validator.check(name), Validator.check(duration), Validator.check(measureUnit));
-        System.out.println(ingredient);
-        System.out.println(ingredient.getName());
+    @PostMapping("/create")
+    public void createIngredient(@RequestBody Ingredient ingredient) throws ValidationException {
+        Validator.check(ingredient.getName());
+        Validator.check(ingredient.getAmount());
+        Validator.check(ingredient.getMeasureUnit());
         ingredientService.addIngredient(ingredient);
 
     }
