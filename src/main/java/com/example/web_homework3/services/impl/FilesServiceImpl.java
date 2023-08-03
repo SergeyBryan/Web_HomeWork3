@@ -2,13 +2,12 @@ package com.example.web_homework3.services.impl;
 
 import com.example.web_homework3.controllers.FileProcessingException;
 import com.example.web_homework3.services.FilesService;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
 
 @Service
 public class FilesServiceImpl implements FilesService {
@@ -51,5 +50,20 @@ public class FilesServiceImpl implements FilesService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public File getDataFile(String dataFilePath, String dataFileName) {
+        return new File(dataFilePath + "/" + dataFileName);
+    }
+
+    @Override
+    public Path createTempFile(String dataFilePath, String suffix) {
+        try {
+            return Files.createTempFile(Path.of(dataFilePath), "tempFile", suffix);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
